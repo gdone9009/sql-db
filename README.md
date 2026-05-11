@@ -51,3 +51,19 @@
 1. **데이터베이스 접속 및 파일 생성**
    ```bash
    sqlite3 mission12.db
+   ```
+
+2. **스키마 및 데이터 로드**
+```sql
+sqlite> .read schema.sql
+sqlite> .read data.sql
+
+```
+
+
+3. **쿼리 실행 확인**
+```sql
+sqlite> .read queries.sql
+
+```
+
