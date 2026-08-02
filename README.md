@@ -1,153 +1,156 @@
-# 📊 도서 관리 시스템 데이터베이스(SQL-DB) 구축 리포트
+# 📊 SQL로 만드는 나만의 데이터베이스: 도서 관리 시스템 (Book Management System)
 
-본 프로젝트는 **Codyssey AI All-in-One** 과정의 미션 12를 수행한 결과물로, SQLite를 활용하여 관계형 데이터베이스의 핵심 원리인 참조 무결성(FK)과 데이터 분석(SQL)을 실습한 기술 문서입니다.
+본 프로젝트는 **SQL 기반 도서 관리 시스템** 구축 및 분석 실습 결과물입니다. 백엔드 프레임워크 없이 표준 SQL과 SQLite를 활용하여 도메인 모델링, 참조 무결성(PK/FK) 제약조건 설정, 1:N 관계 설계, 데이터 입력, 핵심 쿼리 16선 및 보너스 분석 보고서를 완성했습니다.
 
 ---
 
-## 📂 1. 시스템 아키텍처 및 ER-Diagram
-
-데이터의 효율적인 관리와 중복 방지를 위해 총 4개의 테이블로 정규화하여 설계하였습니다.
-
-### [ER-Diagram 구조]
+## 📂 1. 제출물 구성 (Deliverables)
 
 ```text
-  [Members] (회원)          [Categories] (장르)
-  - member_id (PK)  <--.    - category_id (PK)
-  - name               |    - category_name
-  - email (Unique)     |           |
-  - join_date          |           | (1:N)
-                       |           v
-                       |      [Books] (도서)
-  [Rentals] (대여)      |---   - book_id (PK)
-  - rental_id (PK)     |      - title
-  - member_id (FK) >---'      - author
-  - book_id (FK)   >---------- - category_id (FK)
-  - rental_date
-
+sql-db/
+├── schema.sql           # [1] 스키마 생성 DDL 스크립트 (PK, FK, UNIQUE, NOT NULL 제약조건 포함)
+├── data.sql             # [2] 샘플 데이터 DML 스크립트 (테이블당 10행 이상)
+├── queries.sql          # [3] 핵심 SQL 쿼리 16선 + 보너스 과제 쿼리
+├── generate_results.py  # DB 실행 및 결과 자동화 생성 Python 스크립트
+├── run.sh               # 전체 자동 실행 쉘 스크립트
+├── mission12.db         # 생성된 SQLite 데이터베이스 파일
+├── results/             # [4] 쿼리 실행 결과 폴더
+│   ├── query_results.txt# 전체 쿼리 실행 결과 종합 텍스트 보고서
+│   ├── Q01.txt ~ Q16.txt# 개별 쿼리 실행 결과
+│   ├── Bonus_01A.txt ~ Bonus_03C.txt
+│   └── Bonus_02.txt     # 데이터 무결성 에러 발생 테스트 및 해결 텍스트
+└── README.md            # [5] 데이터베이스 설계 및 수행 종합 리포트
 ```
 
 ---
 
-## 🛠 2. 테이블 설계 상세 (Schema)
+## 🏗 2. 도메인 모델링 및 ER-Diagram
 
-데이터의 일관성을 유지하기 위해 다음과 같은 제약 조건을 적용했습니다.
+본 시스템은 **회원(members)**, **카테고리(categories)**, **도서(books)**, **대여(rentals)**의 4개 테이블로 구성되며, 다음과 같은 1:N 관계 3개를 가지고 있습니다.
 
-### 주요 제약 조건 (Constraints)
+- `categories (1) : books (N)` — 한 카테고리에 여러 도서가 속함
+- `members (1) : rentals (N)` — 한 회원이 여러 번 대여를 수행함
+- `books (1) : rentals (N)` — 한 도서가 여러 번 대여될 수 있음
 
-* **Primary Key & AUTOINCREMENT**: 각 레코드에 고유 번호를 부여하고 자동 생성합니다.
-* **Foreign Key (FK)**: 부모 테이블에 없는 ID가 자식 테이블에 등록되는 것을 차단하여 **참조 무결성**을 보장합니다.
-* **Unique & Not Null**: 이메일 중복을 방지하고 필수 정보(이름, 제목 등) 누락을 막습니다.
-
----
-
-## ⚡ 3. 쿼리 최적화 기법 (Alias & Join)
-
-복잡한 데이터 관계를 효율적으로 조회하기 위해 테이블 별칭(Alias)을 사용했습니다.
-
-| 별칭 | 대상 테이블 | 활용 이유 |
-| --- | --- | --- |
-| **m** | members | 회원 정보(이름, 이메일) 호출 시 사용 |
-| **b** | books | 도서 상세 정보와 연결 시 사용 |
-| **r** | rentals | 대여 이력 및 날짜 계산의 중심 |
-| **c** | categories | 장르별 통계 산출 시 기준점으로 사용 |
-
----
-
-## 📈 4. 비즈니스 인사이트 (미니 리포트)
-
-SQL 쿼리를 통해 도서관 운영에 필요한 핵심 지표 3가지를 도출했습니다.
-
-### ① 가장 인기 있는 도서 TOP 3 (인기 지표)
-
-`JOIN`과 `GROUP BY`를 사용하여 대여 횟수가 가장 많은 도서를 산출합니다.
-
-```sql
-SELECT b.title, COUNT(r.rental_id) AS total_rentals
-FROM books b
-JOIN rentals r ON b.book_id = r.book_id
-GROUP BY b.book_id ORDER BY total_rentals DESC LIMIT 3;
-
-```
-
-### ② 장르별 도서 보유 현황 (재고 지표)
-
-`LEFT JOIN`을 활용해 도서가 0권인 카테고리까지 모두 포함한 현황을 파악합니다.
-
-```sql
-SELECT c.category_name, COUNT(b.book_id) AS book_count
-FROM categories c
-LEFT JOIN books b ON c.category_id = b.category_id
-GROUP BY c.category_id;
-
-```
-
-### ③ 데이터 정합성 검증 (보안 지표)
-
-존재하지 않는 회원 번호(999)로 대여를 시도할 때, DB 엔진이 **FK 제약 조건**에 의해 입력을 거부하는 것을 확인했습니다. (참조 무결성 증명)
-
----
-
-## 🤖 5. 실행 자동화 가이드 (Automation)
-
-작업 효율성을 극대화하기 위해 통합 실행 환경을 구축했습니다.
-
-### 통합 실행 파일 (`init.sql`)
-
-하나의 명령어로 전체 데이터베이스를 재구축하고 분석 결과를 확인합니다.
-
-```bash
-# 실행 명령어
-sqlite3 mission12.db ".read init.sql"
-
-```
-
-### 가상 테이블 (`VIEW`) 운영
-
-자주 조회하는 '대여 현황' 쿼리를 `VIEW`로 저장하여 코드 재사용성을 높였습니다.
-
-* **View Name**: `v_rental_status`
-* **장점**: 복잡한 Join 문을 매번 작성할 필요 없이 일반 테이블처럼 조회 가능.
-
----
-
-## 🏁 6. 결론 및 기대 효과
-
-이번 실습을 통해 단순한 데이터 나열이 아닌, 관계(Relation)를 통한 데이터 관리의 중요성을 학습했습니다. 이는 향후 **FastAPI**와 같은 백엔드 프레임워크에서 데이터베이스를 연동할 때 탄탄한 기초 자산이 될 것입니다.
-
-## 🏗 1. 데이터 구조 설계 (ER-Diagram)
-
-본 시스템은 회원, 도서, 카테고리, 대여 기록 간의 유기적인 관계를 바탕으로 설계되었습니다.
+### ER-Diagram (Mermaid)
 
 ```mermaid
 erDiagram
-    MEMBERS ||--o{ RENTALS : "makes"
-    BOOKS ||--o{ RENTALS : "is rented"
-    CATEGORIES ||--o{ BOOKS : "contains"
+    MEMBERS ||--o{ RENTALS : "대여 수행 (1:N)"
+    BOOKS ||--o{ RENTALS : "대여됨 (1:N)"
+    CATEGORIES ||--o{ BOOKS : "분류함 (1:N)"
 
     MEMBERS {
-        integer member_id PK
-        string name
-        string email UK
-        string phone
-        date join_date
+        integer member_id PK "회원 고유 번호 (AUTOINCREMENT)"
+        string name "회원 이름 (NOT NULL)"
+        string email UK "이메일 주소 (UNIQUE, NOT NULL)"
+        string phone "연락처"
+        date join_date "가입일자 (DEFAULT today)"
     }
 
     CATEGORIES {
-        integer category_id PK
-        string category_name UK
+        integer category_id PK "카테고리 고유 번호 (AUTOINCREMENT)"
+        string category_name UK "장르/분류명 (UNIQUE, NOT NULL)"
     }
 
     BOOKS {
-        integer book_id PK
-        string title
-        string author
-        integer category_id FK
+        integer book_id PK "도서 고유 번호 (AUTOINCREMENT)"
+        string title "도서 제목 (NOT NULL)"
+        string author "저자명 (NOT NULL)"
+        integer price "정가 (DEFAULT 15000)"
+        integer category_id FK "카테고리 참조 (NOT NULL)"
     }
 
     RENTALS {
-        integer rental_id PK
-        integer member_id FK
-        integer book_id FK
-        date rental_date
+        integer rental_id PK "대여 기록 고유 번호 (AUTOINCREMENT)"
+        integer member_id FK "회원 참조 (NOT NULL)"
+        integer book_id FK "도서 참조 (NOT NULL)"
+        date rental_date "대여일자 (DEFAULT today)"
     }
 ```
+
+---
+
+## 🛠 3. 테이블 설계 및 제약조건 (Schema & Constraints)
+
+### 주요 적용 제약조건
+1. **Primary Key (PK)**: 모든 테이블에 `INTEGER PRIMARY KEY AUTOINCREMENT` 적용.
+2. **Foreign Key (FK)**:
+   - `books.category_id` ➔ `categories.category_id`
+   - `rentals.member_id` ➔ `members.member_id`
+   - `rentals.book_id` ➔ `books.book_id`
+   - `PRAGMA foreign_keys = ON;`으로 참조 무결성을 강제함.
+3. **NOT NULL**: 필수 입력 항목 (`name`, `email`, `category_name`, `title`, `author`, `category_id`, `member_id`, `book_id`)
+4. **UNIQUE**: 중복 방지 컬럼 (`members.email`, `categories.category_name`)
+
+---
+
+## 📋 4. 핵심 SQL 쿼리 16선 요약
+
+| 분류 | ID | 쿼리 개요 | 사용 문법 / 기술 |
+|---|---|---|---|
+| **기본 조회 (4개)** | Q01 | 전체 도서 목록 제목순 정렬 상위 5권 | `ORDER BY`, `LIMIT` |
+| | Q02 | 2026년 2월 이후 가입 회원 목록 | `WHERE`, `ORDER BY` |
+| | Q03 | 저자명에 '로버트'가 포함된 도서 검색 | `WHERE LIKE` |
+| | Q04 | Gmail 사용하는 회원 목록 3명 | `WHERE LIKE`, `LIMIT` |
+| **조인 (5개)** | Q05 | 도서 제목과 카테고리명 조인 | `INNER JOIN` |
+| | Q06 | 대여 상세 이력 (회원, 도서, 카테고리, 대여일) | 3개 테이블 `INNER JOIN` |
+| | Q07 | 'IT/프로그래밍' 카테고리 도서 조인 | `INNER JOIN`, `WHERE` |
+| | Q08 | 전체 카테고리 및 도서 (미보유 카테고리 포함) | `LEFT JOIN` |
+| | Q09 | 전체 회원 및 대여 기록 (미대여 회원 포함) | `LEFT JOIN` |
+| **집계/통계 (3개)**| Q10 | 카테고리별 보유 도서 수량 집계 | `COUNT`, `GROUP BY` |
+| | Q11 | 회원별 대출 건수 집계 및 최다 대출 회원 TOP 3 | `COUNT`, `GROUP BY`, `LIMIT` |
+| | Q12 | 카테고리별 도서 평균가 및 총 재고 금액 | `SUM`, `AVG`, `COUNT`, `GROUP BY` |
+| **서브쿼리 (1개)** | Q13 | 한 번도 대여된 적 없는 미대여 도서 조회 | 서브쿼리 (`NOT IN`) |
+| **수정/삭제 (2개)** | Q14 | 특정 회원('정창석') 연락처 변경 | `UPDATE` |
+| | Q15 | 대여 기록 없는 임시 미대여 도서 삭제 | `DELETE`, 서브쿼리 |
+| **인덱스 (1개)** | Q16 | `books.category_id` 외래키 컬럼 인덱스 생성 | `CREATE INDEX` |
+
+---
+
+## 🎁 5. 보너스 과제 (Bonus Tasks)
+
+### 1. 조인 1개를 두 방식으로 풀기 (JOIN vs 서브쿼리)
+- **요구사항**: 'IT/프로그래밍' 카테고리에 속한 도서 목록 조회
+- **JOIN 방식**:
+  ```sql
+  SELECT b.title, b.author 
+  FROM books b 
+  JOIN categories c ON b.category_id = c.category_id 
+  WHERE c.category_name = 'IT/프로그래밍';
+  ```
+- **서브쿼리 방식**:
+  ```sql
+  SELECT title, author 
+  FROM books 
+  WHERE category_id = (SELECT category_id FROM categories WHERE category_name = 'IT/프로그래밍');
+  ```
+- **차이 비교**:
+  - **가독성**: 서브쿼리는 조건절에 단일 결과를 대입하므로 구문이 단순하지만, JOIN 방식은 테이블 간 관계를 명시적으로 표현합니다.
+  - **성능/실행계획**: 인덱스가 존재하는 실무 RDBMS 환경에서는 Optimizer가 JOIN 시 인덱스 스캔을 효율적으로 활용하므로 복잡한 멀티 테이블 조회 시 JOIN이 유리합니다.
+
+### 2. 데이터 정합성 깨뜨려 보기 (FK 에러 테스트)
+- **에러 시도**:
+  ```sql
+  INSERT INTO rentals (member_id, book_id, rental_date) VALUES (999, 1, '2026-08-01');
+  ```
+- **발생 원인**: `members` 테이블에 `member_id = 999`인 부모 레코드가 존재하지 않으므로 SQLite의 외래키 제약조건(`FOREIGN KEY constraint failed`)이 작동하여 입력을 차단함.
+- **해결 방안**: 부모 테이블(`members`)에 999번 회원을 먼저 생성(INSERT)하거나, 존재하는 회원 ID를 지정해야 참조 무결성이 유지됩니다.
+
+### 3. 미니 리포트 - 핵심 지표 3선
+1. **인기 도서 TOP 3**: `클린 코드`(3회), `부자 아빠 가난한 아빠`(2회), `사피엔스`(1회)가 최다 대여 도서로 집계됨.
+2. **카테고리별 자산 가치**: `역사`(50,000원), `자연과학`(47,000원), `경제/경영`(42,000원) 순으로 높은 자산 비중을 차지함.
+3. **회원 서비스 참여율**: 전체 회원 10명 중 9명이 대여 이력을 보유하여 **90.0%의 활성 참여율**을 기록함.
+
+---
+
+## ⚡ 6. 실행 방법 (How to Run)
+
+### 쉘 스크립트로 일괄 실행
+```bash
+cd sql-db
+./run.sh
+```
+
+### 결과 확인
+생성된 실행 결과 텍스트 파일은 `results/query_results.txt` 및 `results/*.txt`에서 확인하실 수 있습니다.

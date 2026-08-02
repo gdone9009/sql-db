@@ -1,9 +1,15 @@
-# run.sh
 #!/bin/bash
-rm -f test2.db  -- 기존 DB를 지우고 새로 깨끗하게 만들고 싶을 때 추가
-sqlite3 test2.db <<EOF
-.read schema.sql
-.read data.sql
-.read queries.sql
-EOF
-echo "✅ 데이터베이스 구축 및 쿼리 실행 완료!"
+# ======================================================
+# 도서 관리 시스템 DB 구축 및 쿼리 실행 자동화 스크립트
+# ======================================================
+
+set -e
+
+echo "🚀 [1/3] 기존 데이터베이스 및 실행 결과 정리 중..."
+rm -f mission12.db
+
+echo "📊 [2/3] SQLite 데이터베이스 생성 및 스키마/데이터/쿼리 실행 중..."
+python3 generate_results.py
+
+echo "✅ [3/3] 성공적으로 모든 과제 스크립트 및 실행 결과가 생성되었습니다!"
+echo "📁 실행 결과 확인: results/query_results.txt"
