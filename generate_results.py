@@ -1,8 +1,9 @@
 import sqlite3
 import os
 
-db_path = "/Users/gdone/dev/codyssey/sql-db/mission12.db"
-results_dir = "/Users/gdone/dev/codyssey/sql-db/results"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "mission12.db")
+results_dir = os.path.join(BASE_DIR, "results")
 
 os.makedirs(results_dir, exist_ok=True)
 
@@ -14,12 +15,12 @@ cursor = conn.cursor()
 cursor.execute("PRAGMA foreign_keys = ON;")
 
 # 1. Execute schema.sql
-with open("/Users/gdone/dev/codyssey/sql-db/schema.sql", "r", encoding="utf-8") as f:
+with open(os.path.join(BASE_DIR, "schema.sql"), "r", encoding="utf-8") as f:
     schema_sql = f.read()
 cursor.executescript(schema_sql)
 
 # 2. Execute data.sql
-with open("/Users/gdone/dev/codyssey/sql-db/data.sql", "r", encoding="utf-8") as f:
+with open(os.path.join(BASE_DIR, "data.sql"), "r", encoding="utf-8") as f:
     data_sql = f.read()
 cursor.executescript(data_sql)
 
