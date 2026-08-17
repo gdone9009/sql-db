@@ -2,8 +2,22 @@
 
 > **과제명**: 정보를 깔끔하게 정리하는 디지털 서랍장 만들기 (미션 5-1: SQL로 만드는 나만의 데이터베이스)  
 > **수행자**: gdone9009 (gdone9009@gmail.com)  
-> **데이터베이스 엔진**: SQLite 3 (표준 ANSI SQL 준수)  
+> **🌐 GitHub Pages 라이브 웹 서비스**: [https://gdone9009.github.io/sql-db/](https://gdone9009.github.io/sql-db/)  
+> **데이터베이스 엔진**: SQLite 3 (표준 ANSI SQL 준수 & WebAssembly In-Browser SQLite)  
 > **아키텍처**: 제3정규형(3NF) 기반 관계형 데이터 모델링, 참조 무결성(PK/FK/UNIQUE/NOT NULL) 완비
+
+---
+
+## 🌐 0. GitHub Pages 대화형 웹 서비스 & 학습 포털
+
+본 프로젝트는 GitHub Pages를 통해 브라우저에서 바로 동작하는 **실시간 SQL 도서 관리 웹 애플리케이션 및 학습 포털**을 제공합니다:
+👉 **[웹 서비스 바로가기 (https://gdone9009.github.io/sql-db/)](https://gdone9009.github.io/sql-db/)**
+
+* 📖 **도서관 웹 앱**: 실시간 도서 검색, 카테고리 필터링, 신규 회원 등록, 대여/반납 트랜잭션 시뮬레이션
+* ⚡ **인터랙티브 SQL 스튜디오**: 16개 핵심 쿼리 원클릭 프리셋 실행 및 커스텀 SQL 쿼리 실시간 콘솔
+* 📊 **비즈니스 대시보드**: 인기 도서 TOP3, 카테고리별 자산 건전성, 회원 대여 활성 참여율 게이지 및 FK 위반 시뮬레이터
+* 🏗️ **ERD & 스키마 뷰어**: 4개 테이블 3NF 구조 및 1:N 관계 해설
+* 📘 **학습 매뉴얼 & Q&A**: 엑셀 vs DB 비교, 정규화 원칙, 인덱스 원리, 기술 면접 대비 Q&A
 
 ---
 
