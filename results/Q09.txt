@@ -6,9 +6,9 @@ SELECT m.name AS member_name, m.email, r.rental_id, r.rental_date FROM members m
 실행 결과:
 member_name | email | rental_id | rental_date
 ------------+-------+-----------+------------
-정창석 | js@gmail.com | 1 | 2026-06-01
-정창석 | js@gmail.com | 2 | 2026-06-05
-정창석 | js@gmail.com | 11 | 2026-07-01
+강동원 | gdone9009@gmail.com | 1 | 2026-06-01
+강동원 | gdone9009@gmail.com | 2 | 2026-06-05
+강동원 | gdone9009@gmail.com | 11 | 2026-07-01
 김철수 | chul@naver.com | 3 | 2026-06-10
 김철수 | chul@naver.com | 12 | 2026-07-05
 이영희 | yh@daum.net | 4 | 2026-06-12

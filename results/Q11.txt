@@ -6,7 +6,7 @@ SELECT m.name AS member_name, COUNT(r.rental_id) AS total_rentals FROM members m
 실행 결과:
 member_name | total_rentals
 ------------+--------------
-정창석 | 3
+강동원 | 3
 김철수 | 2
 이영희 | 1
 (총 3개 행 조회됨)

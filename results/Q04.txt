@@ -6,7 +6,7 @@ SELECT member_id, name, email FROM members WHERE email LIKE '%@gmail.com' ORDER 
 실행 결과:
 member_id | name | email
 ----------+------+------
-1 | 정창석 | js@gmail.com
+1 | 강동원 | gdone9009@gmail.com
 4 | 박민수 | ms@gmail.com
 7 | 윤서준 | sj@gmail.com
 (총 3개 행 조회됨)

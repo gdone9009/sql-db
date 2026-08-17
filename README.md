@@ -160,7 +160,7 @@ erDiagram
 | **Q11** | 집계/랭킹 | 회원별 총 대출 건수 집계 및 대출왕 TOP 3 | `COUNT(r.rental_id) + GROUP BY + LIMIT 3` |
 | **Q12** | 다중 집계 | 카테고리별 도서 평균가 및 총 재고 자산 금액 | `SUM(price)`, `ROUND(AVG(price), 0)` |
 | **Q13** | 서브쿼리 | 대여 이력이 한 번도 없는 미대여 도서 조회 | `WHERE book_id NOT IN (SELECT book_id FROM rentals)` |
-| **Q14** | 데이터 수정 | '정창석' 회원의 연락처 정보 수정 | `UPDATE members SET phone = ... WHERE name = ...` |
+| **Q14** | 데이터 수정 | '강동원' 회원의 연락처 정보 수정 | `UPDATE members SET phone = ... WHERE name = ...` |
 | **Q15** | 데이터 삭제 | 대여 이력 없는 임시 테스트 도서 조건부 삭제 | `DELETE FROM books WHERE ... NOT IN (서브쿼리)` |
 | **Q16** | 인덱스 | `books.category_id` 외래키 컬럼 B-Tree 인덱스 생성 | `CREATE INDEX idx_books_category_id ON books(category_id)` |
 

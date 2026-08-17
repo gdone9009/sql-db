@@ -40,7 +40,7 @@ book_id | title | author | price
 SQL: SELECT member_id, name, email FROM members WHERE email LIKE '%@gmail.com' ORDER BY member_id ASC LIMIT 3;
 member_id | name | email
 ----------+------+------
-1 | 정창석 | js@gmail.com
+1 | 강동원 | gdone9009@gmail.com
 4 | 박민수 | ms@gmail.com
 7 | 윤서준 | sj@gmail.com
 (총 3개 행 조회됨)
@@ -66,7 +66,7 @@ SQL: SELECT r.rental_id, m.name AS member_name, b.title AS book_title, c.categor
 rental_id | member_name | book_title | category_name | rental_date
 ----------+-------------+------------+---------------+------------
 12 | 김철수 | 이기적 유전자 | 자연과학 | 2026-07-05
-11 | 정창석 | 총 균 쇠 | 역사 | 2026-07-01
+11 | 강동원 | 총 균 쇠 | 역사 | 2026-07-01
 10 | 한결 | 부자 아빠 가난한 아빠 | 경제/경영 | 2026-06-28
 9 | 조예은 | 클린 코드 | IT/프로그래밍 | 2026-06-25
 8 | 윤서준 | 미움받을 용기 | 심리학 | 2026-06-22
@@ -75,8 +75,8 @@ rental_id | member_name | book_title | category_name | rental_date
 5 | 박민수 | 사피엔스 | 역사 | 2026-06-15
 4 | 이영희 | 파친코 | 소설 | 2026-06-12
 3 | 김철수 | 클린 코드 | IT/프로그래밍 | 2026-06-10
-2 | 정창석 | 부자 아빠 가난한 아빠 | 경제/경영 | 2026-06-05
-1 | 정창석 | 클린 코드 | IT/프로그래밍 | 2026-06-01
+2 | 강동원 | 부자 아빠 가난한 아빠 | 경제/경영 | 2026-06-05
+1 | 강동원 | 클린 코드 | IT/프로그래밍 | 2026-06-01
 (총 12개 행 조회됨)
 --------------------------------------------------
 [Q07] 'IT/프로그래밍' 카테고리에 속한 도서 조회 (INNER JOIN)
@@ -110,9 +110,9 @@ IT/프로그래밍 | 클린 코드
 SQL: SELECT m.name AS member_name, m.email, r.rental_id, r.rental_date FROM members m LEFT JOIN rentals r ON m.member_id = r.member_id ORDER BY m.member_id;
 member_name | email | rental_id | rental_date
 ------------+-------+-----------+------------
-정창석 | js@gmail.com | 1 | 2026-06-01
-정창석 | js@gmail.com | 2 | 2026-06-05
-정창석 | js@gmail.com | 11 | 2026-07-01
+강동원 | gdone9009@gmail.com | 1 | 2026-06-01
+강동원 | gdone9009@gmail.com | 2 | 2026-06-05
+강동원 | gdone9009@gmail.com | 11 | 2026-07-01
 김철수 | chul@naver.com | 3 | 2026-06-10
 김철수 | chul@naver.com | 12 | 2026-07-05
 이영희 | yh@daum.net | 4 | 2026-06-12
@@ -145,7 +145,7 @@ IT/프로그래밍 | 1
 SQL: SELECT m.name AS member_name, COUNT(r.rental_id) AS total_rentals FROM members m INNER JOIN rentals r ON m.member_id = r.member_id GROUP BY m.member_id, m.name ORDER BY total_rentals DESC LIMIT 3;
 member_name | total_rentals
 ------------+--------------
-정창석 | 3
+강동원 | 3
 김철수 | 2
 이영희 | 1
 (총 3개 행 조회됨)
@@ -169,8 +169,8 @@ book_id | title | author | price
 6 | 자본론 | 칼 마르크스 | 25000
 (총 1개 행 조회됨)
 --------------------------------------------------
-[Q14] '정창석' 회원의 연락처 정보 수정 (UPDATE)
-SQL: UPDATE members SET phone = '010-9999-8888' WHERE name = '정창석';
+[Q14] '강동원' 회원의 연락처 정보 수정 (UPDATE)
+SQL: UPDATE members SET phone = '010-9999-8888' WHERE name = '강동원';
 결과: 성공적으로 실행됨 (영향을 받은 행 수: 1)
 --------------------------------------------------
 [Q15] 대여 이력이 없는 미대여 임시 테스트 도서 삭제 (DELETE)

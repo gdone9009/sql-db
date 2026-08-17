@@ -65,8 +65,8 @@ queries = [
     ("Q13", "대여 이력이 한 번도 없는 미대여 도서 목록 조회 (서브쿼리 - NOT IN)", 
      "SELECT book_id, title, author, price FROM books WHERE book_id NOT IN (SELECT DISTINCT book_id FROM rentals);"),
     
-    ("Q14", "'정창석' 회원의 연락처 정보 수정 (UPDATE)", 
-     "UPDATE members SET phone = '010-9999-8888' WHERE name = '정창석';"),
+    ("Q14", "'강동원' 회원의 연락처 정보 수정 (UPDATE)", 
+     "UPDATE members SET phone = '010-9999-8888' WHERE name = '강동원';"),
     
     ("Q15", "대여 이력이 없는 미대여 임시 테스트 도서 삭제 (DELETE)", 
      "DELETE FROM books WHERE title = '임시 테스트 책' AND book_id NOT IN (SELECT book_id FROM rentals);"),

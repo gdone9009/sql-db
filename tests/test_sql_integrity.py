@@ -59,7 +59,7 @@ class TestSQLDatabase(unittest.TestCase):
     def test_04_unique_constraint(self):
         """Verify UNIQUE constraint prevents duplicate member email."""
         with self.assertRaises(sqlite3.IntegrityError):
-            self.cursor.execute("INSERT INTO members (name, email, phone) VALUES ('중복회원', 'js@gmail.com', '010-0000-0000');")
+            self.cursor.execute("INSERT INTO members (name, email, phone) VALUES ('중복회원', 'gdone9009@gmail.com', '010-0000-0000');")
 
     def test_05_not_null_constraint(self):
         """Verify NOT NULL constraint prevents NULL book title."""
